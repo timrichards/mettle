@@ -2,24 +2,28 @@ build: false
 version: "{branch}-{build}"
 
 environment:
+  VS: C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat
   BOOST_INCLUDEDIR: C:\Libraries\boost_1_59_0
   BOOST_LIBRARYDIR: C:\Libraries\boost_1_59_0\lib32-msvc-14.0
-  PYTHON: C:\Python27
+  PYTHON_PATH: C:\Python27
 
-  matrix:
-    - VS: C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat
-      BOOST_INCLUDEDIR: C:\Libraries\boost_1_59_0
-      BOOST_LIBRARYDIR: C:\Libraries\boost_1_59_0\lib32-msvc-14.0
+cache:
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 install:
+  - cinst ninja
   - call "%VS%" x86
   - cl.exe
-  - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
-  - pip install bfg9000
-  - cinst ninja
-  - python scripts\vendorize_bencode.py
+  - set PATH=%PYTHON_PATH%;%PYTHON_PATH%\Scripts;%PATH%
+
+  # Install the latest master revision of bfg9000.
+  - git clone https://github.com/jimporter/bfg9000.git
+  - cd bfg9000
+  - python setup.py install
+  - cd ..
 test_script:
   - set CPPFLAGS=/WX
-  - 9k build --backend=ninja
+  - 9k build --vendorize --backend=ninja
   - cd build
   - ninja test
