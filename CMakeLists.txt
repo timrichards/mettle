@@ -14,6 +14,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 file(GLOB LIBRARY_SRC 
     "src/libmettle/*.cpp" 
     "src/libmettle/log/*.cpp" 
+    "src/libmettle/posix/*.cpp" 
     "src/posix/*.cpp" 
     "src/libmettle/log/posix/*.cpp"
     )
