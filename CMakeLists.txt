@@ -18,7 +18,7 @@ file(GLOB LIBRARY_SRC
     "src/libmettle/log/posix/*.cpp"
     )
 add_library(mettle STATIC ${LIBRARY_SRC})
-target_link_libraries(mettle ${CONAN_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(mettle ${CONAN_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 file(GLOB EXECUTABLE_SRC "src/mettle/*.cpp" "src/mettle/posix/*.cpp")
 add_executable(mettle_binary ${CONAN_LIBS} ${EXECUTABLE_SRC})

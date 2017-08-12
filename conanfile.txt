@@ -1,3 +1,6 @@
 [requires]
 ninja/1.7.2@informatics/stable
 
+[imports]
+bin, ninja -> ./bin
+
