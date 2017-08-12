@@ -21,7 +21,7 @@ add_library(mettle STATIC ${LIBRARY_SRC})
 target_link_libraries(mettle ${CONAN_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 file(GLOB EXECUTABLE_SRC "src/mettle/*.cpp" "src/mettle/posix/*.cpp")
-add_executable(mettle_binary ${CONAN_LIBS} ${EXECUTABLE_SRC})
-target_link_libraries(mettle_binary mettle ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-set_target_properties(mettle_binary PROPERTIES LINKER_LANGUAGE CXX OUTPUT_NAME "mettle")
+add_executable(mettle_binary ${EXECUTABLE_SRC})
+target_link_libraries(mettle_binary mettle ${CONAN_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+set_target_properties(mettle_binary PROPERTIES OUTPUT_NAME "mettle")
 
