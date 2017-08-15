@@ -1,6 +1,7 @@
-project(Mettle LANGUAGES CXX)
+project(Mettle)
 cmake_minimum_required(VERSION 3.2)
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/bencode.hpp/include)
