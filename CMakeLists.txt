@@ -1,4 +1,4 @@
-project(Mettle LANGUAGES CXX)
+project(Mettle)
 cmake_minimum_required(VERSION 3.2)
 set(CMAKE_CXX_STANDARD 14)
 
