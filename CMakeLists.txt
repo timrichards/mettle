@@ -16,6 +16,9 @@ include_directories(${CMAKE_SOURCE_DIR}/bencode.hpp/include)
 find_package(Threads)
 
 find_package(Boost REQUIRED COMPONENTS program_options iostreams)
+add_library(Boost INTERFACE IMPORTED)
+set_property(TARGET Boost PROPERTY
+    INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
 
 # This is a hack for now.  For one thing, I need to get Windows supported
 file(GLOB LIBRARY_SRC 
