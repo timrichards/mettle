@@ -2,7 +2,12 @@ project(Mettle)
 cmake_minimum_required(VERSION 3.2)
 set(CMAKE_CXX_STANDARD 14)
 
-include(../conanbuildinfo.cmake)
+find_file(CONAN_BUILDINFO NAMES conanbuildinfo.cmake PATHS 
+    ${CMAKE_BINARY_DIR} # Development builds
+    ${CMAKE_BINARY_DIR}/..  # Conan create
+    ${CMAKE_SOURCE_DIR}/conan  # Used by Bamboo continuous integration 
+    )
+include(${CONAN_BUILDINFO})
 conan_basic_setup()
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
