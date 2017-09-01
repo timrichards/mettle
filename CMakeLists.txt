@@ -15,7 +15,7 @@ include_directories(${CMAKE_SOURCE_DIR}/bencode.hpp/include)
 
 find_package(Threads)
 
-find_package(Boost REQUIRED COMPONENTS program_options iostreams)
+find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams)
 add_library(Boost INTERFACE IMPORTED)
 set_property(TARGET Boost PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
