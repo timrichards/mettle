@@ -30,11 +30,14 @@ file(GLOB LIBRARY_SRC
     )
 add_library(mettle SHARED ${LIBRARY_SRC})
 target_link_libraries(mettle ${CONAN_LIBS} 
-    Boost::program_options Boost::filesystem Boost::regex 
+    Boost::program_options Boost::filesystem Boost::regex Boost::iostreams
     Threads::Threads)
 
 file(GLOB EXECUTABLE_SRC "src/mettle/*.cpp" "src/mettle/posix/*.cpp")
 add_executable(mettle_binary ${EXECUTABLE_SRC})
-target_link_libraries(mettle_binary mettle ${CONAN_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(mettle_binary mettle ${CONAN_LIBS} 
+    Boost::program_options Boost::filesystem Boost::regex Boost::iostreams
+    Threads::Threads)
+
 set_target_properties(mettle_binary PROPERTIES OUTPUT_NAME "mettle")
 
