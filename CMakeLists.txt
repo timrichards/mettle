@@ -8,7 +8,7 @@ find_file(CONAN_BUILDINFO NAMES conanbuildinfo.cmake PATHS
     ${CMAKE_SOURCE_DIR}/conan  # Used by Bamboo continuous integration 
     )
 include(${CONAN_BUILDINFO})
-conan_basic_setup()
+conan_basic_setup(TARGETS)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/bencode.hpp/include)
