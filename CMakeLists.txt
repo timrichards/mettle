@@ -30,14 +30,5 @@ target_link_libraries(mettle CONAN_PKG::Boost Threads::Threads)
 file(GLOB EXECUTABLE_SRC "src/mettle/*.cpp" "src/mettle/posix/*.cpp")
 add_executable(mettle_binary ${EXECUTABLE_SRC})
 target_link_libraries(mettle_binary mettle CONAN_PKG::Boost Threads::Threads)
-install(TARGETS mettle
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    )
-install(TARGETS mettle_binary
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    )
-
 set_target_properties(mettle_binary PROPERTIES OUTPUT_NAME "mettle")
 
