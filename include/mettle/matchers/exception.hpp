@@ -23,9 +23,9 @@ namespace detail {
       std::ostringstream ss;
       ss << "threw ";
       if(m.message.empty())
-        ss << to_printable(e);
+        ss << e.what();
       else
-        ss << type_name(e) << "(" << m.message << ")";
+        ss << type_name<Exception>() << "(" << m.message << ")";
       return {m.matched, ss.str()};
     }
   private:
