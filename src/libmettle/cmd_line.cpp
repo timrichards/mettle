@@ -159,7 +159,6 @@ attr_filter parse_attr(const std::string &value) {
         break;
       }
       negated = false;
-      FALLTHROUGH
     case NAME_START:
       if(i == value.end())
         throw std::invalid_argument("unexpected end of string");
@@ -182,7 +181,6 @@ attr_filter parse_attr(const std::string &value) {
     case VALUE_START:
       start = i;
       state = VALUE;
-      FALLTHROUGH
     case VALUE:
       if(i == value.end() || *i == ',') {
         auto item = has_attr(
