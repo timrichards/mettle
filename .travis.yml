@@ -3,127 +3,214 @@ sudo: false
 
 env:
   global:
+    - BACKEND=ninja
     - COMMONFLAGS="-Wall -Wextra -pedantic -Werror"
+    - PYTHON=python
+    - PIP=pip
 
-matrix:
-  include:
-    - compiler: clang
-      env: COMPILER=clang++-3.6 BACKEND=make BUILD_ARGS="-j4"
-      addons: &clang-36
-        apt:
-          sources: &sources
-            - boost-latest
-            - llvm-toolchain-precise-3.6
-            - llvm-toolchain-precise-3.7
-            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
-          packages:
-            - clang-3.6
-            - libstdc++-5-dev
-            - libboost1.55-dev
-            - libboost-iostreams1.55-dev
-            - libboost-program-options1.55-dev
-            - ninja-build
-            - python-virtualenv
-    - compiler: clang
-      env: COMPILER=clang++-3.6 BACKEND=ninja
-      addons: *clang-36
-
-    - compiler: clang
-      env: COMPILER=clang++-3.7 BACKEND=make BUILD_ARGS="-j4"
-      addons: &clang-37
-        apt:
-          sources: *sources
-          packages:
-            - clang-3.7
-            - libstdc++-5-dev
-            - libboost1.55-dev
-            - libboost-iostreams1.55-dev
-            - libboost-program-options1.55-dev
-            - ninja-build
-            - python-virtualenv
-    - compiler: clang
-      env: COMPILER=clang++-3.7 BACKEND=ninja
-      addons: *clang-37
-
-    - compiler: clang
-      env: COMPILER=clang++-3.8 BACKEND=make BUILD_ARGS="-j4"
-      addons: &clang-38
-        apt:
-          sources: *sources
-          packages:
-            - clang-3.8
-            - libstdc++-5-dev
-            - libboost1.55-dev
-            - libboost-iostreams1.55-dev
-            - libboost-program-options1.55-dev
-            - ninja-build
-            - python-virtualenv
-    - compiler: clang
-      env: COMPILER=clang++-3.8 BACKEND=ninja
-      addons: *clang-38
-
-    - compiler: gcc
-      env: COMPILER=g++-5 BACKEND=make BUILD_ARGS="-j4" EXTRAFLAGS=-Wsuggest-override
-      addons: &gcc-5
-        apt:
-          sources: *sources
-          packages:
-            - g++-5
-            - libboost1.55-dev
-            - libboost-iostreams1.55-dev
-            - libboost-program-options1.55-dev
-            - ninja-build
-            - python-virtualenv
-    - compiler: gcc
-      # GCC doesn't like building in parallel apparently. What am I doing with
-      # my life?
-      env: COMPILER=g++-5 BACKEND=ninja BUILD_ARGS="-j1" EXTRAFLAGS=-Wsuggest-override
-      addons: *gcc-5
-
-    - compiler: gcc
-      env: COMPILER=g++-6 BACKEND=make BUILD_ARGS="-j4" EXTRAFLAGS=-Wsuggest-override
-      addons: &gcc-6
-        apt:
-          sources: *sources
-          packages:
-            - g++-6
-            - libboost1.55-dev
-            - libboost-iostreams1.55-dev
-            - libboost-program-options1.55-dev
-            - ninja-build
-            - python-virtualenv
-    - compiler: gcc
-      env: COMPILER=g++-6 BACKEND=ninja BUILD_ARGS="-j1" EXTRAFLAGS=-Wsuggest-override
-      addons: *gcc-6
-
-    - os: osx
-      osx_image: xcode7.2
-      env: COMPILER=clang++ BACKEND=ninja
-    - os: osx
-      osx_image: xcode7.2
-      env: COMPILER=clang++ BACKEND=ninja EXTRAFLAGS=-DMETTLE_NO_STDLIB_EXTS
+addons:
+  apt:
+    sources: &sources
+      - boost-latest
+      - ubuntu-toolchain-r-test
+    packages: &packages
+      - libboost1.55-dev
+      - libboost-iostreams1.55-dev
+      - libboost-program-options1.55-dev
+      - ninja-build
+      - python-virtualenv
 
 cache:
   apt: true
 
+matrix:
+  include:
+
+    # Clang builds
+
+    - compiler: clang
+      env: COMPILER=clang++-3.6
+      addons:
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-precise-3.6
+          packages:
+            - *packages
+            - clang-3.6
+            - libstdc++-5-dev
+
+    - compiler: clang
+      env: COMPILER=clang++-3.7
+      addons:
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-precise-3.7
+          packages:
+            - *packages
+            - clang-3.7
+            - libstdc++-5-dev
+
+    - compiler: clang
+      env: COMPILER=clang++-3.8
+      addons:
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-precise-3.8
+          packages:
+            - *packages
+            - clang-3.8
+            - libstdc++-5-dev
+
+    - compiler: clang
+      env: COMPILER=clang++-3.9
+      addons:
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-precise-3.9
+          packages:
+            - *packages
+            - clang-3.9
+            - libstdc++-5-dev
+
+    - compiler: clang
+      env: COMPILER=clang++-4.0
+      addons:
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - *packages
+            - clang-4.0
+            - libstdc++-5-dev
+
+    - compiler: clang
+      env: COMPILER=clang++-5.0
+      addons: &clang-50
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - *packages
+            - clang-5.0
+            - libstdc++-5-dev
+
+    # GCC builds
+
+    - compiler: gcc
+      # Something about Travis and/or GCC has issues building in parallel with
+      # ninja...
+      env: COMPILER=g++-5 BUILD_ARGS="-j1" EXTRAFLAGS=-Wsuggest-override
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - *packages
+            - g++-5
+
+    - compiler: gcc
+      env: COMPILER=g++-6 BUILD_ARGS="-j1" EXTRAFLAGS=-Wsuggest-override
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - *packages
+            - g++-6
+
+    - compiler: gcc
+      env: COMPILER=g++-7 BUILD_ARGS="-j1" EXTRAFLAGS=-Wsuggest-override
+      addons: &gcc-7
+        apt:
+          sources: *sources
+          packages:
+            - *packages
+            - g++-7
+
+    # Builds with newer versions of Boost
+
+    # Test 1.58 specifically because it has very strict rules for Boost.Variant.
+    - compiler: clang
+      env: BOOST_VER=1.58 COMPILER=clang++-5.0
+      addons:
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - ninja-build
+            - python-virtualenv
+            - clang-5.0
+            - libstdc++-5-dev
+      install:
+        - |
+          export BOOST_ROOT=$HOME
+          wget https://downloads.sourceforge.net/project/boost/boost/1.58.0/boost_1_58_0.tar.bz2
+          tar -xjf boost_1_58_0.tar.bz2
+          pushd boost_1_58_0
+          ./bootstrap.sh --prefix=$HOME --with-libraries=program_options,iostreams
+          ./b2 link=shared threading=multi variant=release -d0
+          ./b2 install -d0
+          popd
+
+    - compiler: clang
+      env: BOOST_VER=1.66 COMPILER=clang++-5.0
+      addons:
+        apt:
+          sources:
+            - *sources
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - ninja-build
+            - python-virtualenv
+            - clang-5.0
+            - libstdc++-5-dev
+      install:
+        - |
+          export BOOST_ROOT=$HOME
+          wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
+          tar -xjf boost_1_66_0.tar.bz2
+          pushd boost_1_66_0
+          ./bootstrap.sh --prefix=$HOME --with-libraries=program_options,iostreams
+          ./b2 link=shared threading=multi variant=release -d0
+          ./b2 install -d0
+          popd
+
+    # Make-backend builds
+
+    - compiler: clang
+      env: COMPILER=clang++-5.0 BACKEND=make BUILD_ARGS="-j4"
+      addons: *clang-50
+
+    - compiler: gcc
+      env: COMPILER=g++-7 BACKEND=make BUILD_ARGS="-j4" EXTRAFLAGS=-Wsuggest-override
+      addons: *gcc-7
+
+    # macOS builds
+
+    - os: osx
+      env: PYTHON=python2 PIP=pip2 COMPILER=clang++ BACKEND=ninja
+
+    - os: osx
+      env: PYTHON=python2 PIP=pip2 COMPILER=clang++ BACKEND=ninja EXTRAFLAGS=-DMETTLE_NO_STDLIB_EXTS
+
 before_install:
   - |
     if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+      shell_session_update() { :; }
       brew update
       brew install ninja
-      brew install python
-      # For some reason, Homebrew's Python thinks msbuild will get installed by
-      # bfg9000, and so is grumpy about not having lxml.
-      pip install lxml
     else
       set -e
       virtualenv env && source env/bin/activate
     fi
-  - pip install bfg9000
-install:
-  - python scripts/vendorize_bencode.py
+  - ${PIP} install bfg9000
 script:
+  - ${PYTHON} scripts/vendorize_bencode.py
   - |
     CXX=${COMPILER} CPPFLAGS="${COMMONFLAGS} ${EXTRAFLAGS}" 9k build --backend=${BACKEND}
     cd build

@@ -18,6 +18,16 @@
 #  include <io.h>
 #endif
 
+#if __cplusplus >= 201703L
+#  define FALLTHROUGH [[fallthrough]]
+#elif defined(__clang__)
+#  define FALLTHROUGH [[clang::fallthrough]];
+#elif defined(__GNUG__) && __GNUC__ >= 7
+#  define FALLTHROUGH [[gnu::fallthrough]];
+#else
+#  define FALLTHROUGH
+#endif
+
 namespace mettle {
 
 boost::program_options::options_description
@@ -143,13 +153,13 @@ attr_filter parse_attr(const std::string &value) {
     case ITEM_START:
       if(i == value.end()) {
         throw std::invalid_argument("unexpected end of string");
-      }
-      else if(*i == '!') {
+      } else if(*i == '!') {
         negated = true;
         state = NAME_START;
         break;
       }
       negated = false;
+      FALLTHROUGH
     case NAME_START:
       if(i == value.end())
         throw std::invalid_argument("unexpected end of string");
@@ -163,8 +173,7 @@ attr_filter parse_attr(const std::string &value) {
         auto item = has_attr(std::string(start, i));
         result.insert(negated ? !std::move(item) : std::move(item));
         state = ITEM_START;
-      }
-      else if(*i == '=') {
+      } else if(*i == '=') {
         name_start = start;
         name_end = i;
         state = VALUE_START;
@@ -173,6 +182,7 @@ attr_filter parse_attr(const std::string &value) {
     case VALUE_START:
       start = i;
       state = VALUE;
+      FALLTHROUGH
     case VALUE:
       if(i == value.end() || *i == ',') {
         auto item = has_attr(
@@ -218,8 +228,7 @@ void validate(boost::any &v, const std::vector<std::string> &values,
   for(const auto &i : values) {
     try {
       filters->insert(parse_attr(i));
-    }
-    catch(...) {
+    } catch(...) {
       boost::throw_exception(invalid_option_value(i));
     }
   }
@@ -235,8 +244,7 @@ void validate(boost::any &v, const std::vector<std::string> &values,
   for(const auto &i : values) {
     try {
       filters->insert(std::regex(i));
-    }
-    catch(...) {
+    } catch(...) {
       boost::throw_exception(invalid_option_value(i));
     }
   }
@@ -254,8 +262,7 @@ void validate(boost::any &v, const std::vector<std::string> &values,
 
   try {
     v = std::chrono::milliseconds(boost::lexical_cast<std::size_t>(val));
-  }
-  catch(...) {
+  } catch(...) {
     boost::throw_exception(invalid_option_value(val));
   }
 }
@@ -272,8 +279,7 @@ void validate(boost::any &v, const std::vector<std::string> &values,
     std::istringstream is(val);
     is >> h;
     v = h;
-  }
-  catch (...) {
+  } catch (...) {
     boost::throw_exception(invalid_option_value(val));
   }
 }
