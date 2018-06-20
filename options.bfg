@@ -1,0 +1,5 @@
+# -*- python -*-
+
+argument('vendorize', action='store_true',
+         help='vendorize the bencode library')
+argument('std', default='c++14', help='set the C++ standard to compile with')

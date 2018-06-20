@@ -1,29 +1,30 @@
 #ifndef INC_METTLE_DRIVER_DETAIL_OPTIONAL_HPP
 #define INC_METTLE_DRIVER_DETAIL_OPTIONAL_HPP
 
-// Get _LIBCPP_VERSION to detect libc++.
-#include <ciso646>
+// Try to use std::optional, N4480's optional class, or fall back to Boost's.
 
-// Try to use N4480's optional class, or fall back to Boost's.
-#if defined(METTLE_USE_STDLIB_EXTS)
-#  include <experimental/optional>
-#  define METTLE_OPTIONAL_NS std::experimental
-#elif !defined(METTLE_NO_STDLIB_EXTS) && defined(__has_include)
-   // XXX: clang doesn't support SFINAE in variadic templates, which libstdc++'s
-   // `optional` relies on. See <https://llvm.org/bugs/show_bug.cgi?id=23840>.
-#  if !(defined(__clang__) && !defined(_LIBCPP_VERSION) && \
-        defined(__GLIBCXX__)) && __has_include(<experimental/optional>)
+#ifdef __has_include
+#  if __has_include(<optional>) && (__cplusplus >= 201703L || \
+      (defined(_MSVC_LANG) && _MSVC_LANG >= 201703L))
+#    include <optional>
+#    define METTLE_OPTIONAL_NS std
+#  elif __has_include(<experimental/optional>) && \
+        !defined(METTLE_NO_STDLIB_EXTS)
+#    include <experimental/optional>
+#    define METTLE_OPTIONAL_NS std::experimental
+#  endif
+#endif
+
+#ifndef METTLE_OPTIONAL_NS
+#  ifdef METTLE_USE_STDLIB_EXTS
 #    include <experimental/optional>
 #    define METTLE_OPTIONAL_NS std::experimental
 #  else
 #    include <boost/optional.hpp>
 #    include <boost/optional/optional_io.hpp>
 #    define METTLE_OPTIONAL_NS boost
+#    define METTLE_OPTIONAL_USING_BOOST
 #  endif
-#else
-#  include <boost/optional.hpp>
-#  include <boost/optional/optional_io.hpp>
-#  define METTLE_OPTIONAL_NS boost
 #endif
 
 #endif

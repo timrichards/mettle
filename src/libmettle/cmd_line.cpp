@@ -18,8 +18,8 @@
 #  include <io.h>
 #endif
 
-#if __cplusplus >= 201703L
-#  define FALLTHROUGH [[fallthrough]]
+#if __cplusplus >= 201703L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703L)
+#  define FALLTHROUGH [[fallthrough]];
 #elif defined(__clang__)
 #  define FALLTHROUGH [[clang::fallthrough]];
 #elif defined(__GNUG__) && __GNUC__ >= 7

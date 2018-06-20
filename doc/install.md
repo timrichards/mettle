@@ -12,13 +12,16 @@ already have Boost and a C++14 compiler (we'll discuss all of these parts in
 more detail below):
 
 ```sh
-cd path/to/mettle
-scripts/vendorize_bencode.py
 pip install bfg9000
-9k build/
+cd path/to/mettle
+9k build/ --vendorize
 cd build/
 ninja install
 ```
+
+!!! note
+    If you already have [bencode.hpp](https://github.com/jimporter/bencode.hpp)
+    installed, you can remove `--vendorize` from the above commands.
 
 ## Dependencies
 
@@ -33,8 +36,8 @@ Before you get started with mettle, you'll need to install its dependencies:
 * [bencode.hpp](https://github.com/jimporter/bencode.hpp)
 * [bfg9000](https://jimporter.github.io/bfg9000/)
 
-To simplify the installation of bencode.hpp, you can run
-`scripts/vendorize_bencode.py` from your mettle source directory. This will
+To simplify the installation of bencode.hpp, you can pass `--vendorize` during
+configuration (or run `scripts/vendorize_bencode.py` directly). This will
 download and copy bencode.hpp to mettle's include directory, so you won't have
 to install it yourself.
 
@@ -69,11 +72,15 @@ can replace this with any other build system bfg supports.
 Building with bfg9000 is straightforward. Just run the following:
 
 ```sh
-$ cd path/to/mettle/
-$ 9k build/
-$ cd build/
-$ ninja install
+cd path/to/mettle/
+9k build/ --vendorize
+cd build/
+ninja install
 ```
+
+As noted above, if you already have bencode.hpp installed, you can remove the
+`--vendorize` argument. If you'd like to build with C++17 support, you can pass
+`--std=c++17` during configuration.
 
 You can specify the compiler to use and its options with the usual (Unix-style)
 environment variables, such as `CXX` and `CXXFLAGS`. For further information
@@ -87,7 +94,7 @@ test framework otherwise!) To build and run all the tests, just call the
 following from the build directory:
 
 ```sh
-$ ninja test
+ninja test
 ```
 
 If you'd rather build the tests *without* running them, you can call
