@@ -2,25 +2,35 @@ cmake_minimum_required(VERSION 3.2)
 project(Mettle LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(Threads)
-find_package(Boost REQUIRED COMPONENTS program_options iostreams)
+find_file(CONAN_BUILDINFO NAMES conanbuildinfo.cmake PATHS ${CMAKE_BINARY_DIR})
+if (CONAN_BUILDINFO)
+    include(${CONAN_BUILDINFO})
+    conan_basic_setup(TARGETS)
+else(CONAN_BUILDINFO)
+    find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams)
+endif(CONAN_BUILDINFO)
 
-file(GLOB LIBRARY_SRC 
-    "src/libmettle/*.cpp" 
-    "src/libmettle/log/*.cpp" 
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/bencode.hpp/include)
+
+find_package(Threads REQUIRED)
+
+file(GLOB LIBRARY_SRC
+    "src/libmettle/*.cpp"
+    "src/libmettle/log/*.cpp"
     )
 
 if (UNIX)
     file(GLOB PLATFORM_SRC
-    	"src/libmettle/posix/*.cpp" 
-    	"src/posix/*.cpp" 
+    	"src/libmettle/posix/*.cpp"
+    	"src/posix/*.cpp"
     	"src/libmettle/log/posix/*.cpp"
 	)
 elseif (WIN32)
     message(FATAL_ERROR "Mettle CMakeLists.txt not tested on Windows (although Mettle itself is")
     file(GLOB PLATFORM_SRC
-    	"src/libmettle/windows/*.cpp" 
-    	"src/windows/*.cpp" 
+    	"src/libmettle/windows/*.cpp"
+    	"src/windows/*.cpp"
     	"src/libmettle/log/windows/*.cpp"
 	)
 else (UNIX)
@@ -41,8 +51,8 @@ target_link_libraries(mettle
         Boost::program_options Boost::iostreams Threads::Threads
 )
 
-file(GLOB EXECUTABLE_SRC 
-	"src/mettle/*.cpp" 
+file(GLOB EXECUTABLE_SRC
+	"src/mettle/*.cpp"
 	"src/mettle/posix/*.cpp"
 	)
 
